@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/echarts.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@1/dist/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@1/dist/ecStat.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/extension/dataTool.min.js"></script>
+       <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/map/js/china.js"></script> -->
+       <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/map/js/world.js"></script> -->
+       <!-- <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script> -->
+       <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/extension/bmap.min.js"></script> -->
+       <script type="text/javascript">
+            var dom = document.getElementById("container");
+            var myChart = echarts.init(dom);
+            var app = {};
+            option = null;
+            option = {
+                title: {
+                    text: ''
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    top: '57%',
+                    right: '8%',
+                    align: 'right',
+                    width: '1%',
+                    data: ['Wuhan', 'Beijing', 'Munich'],
+                    textStyle: {
+                        fontSize: 20
+                    }
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {
+                            pixelRatio: 3
+                        }
+                    }
+                },
+                grid: {
+                    top: '5%',
+                    left: '4%',
+                    right: '3%',
+                    bottom: '1%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        name: 'Shape Descriptors',
+                        nameLocation: 'center',
+                        nameGap: 168,
+                        nameTextStyle: {
+                            fontSize: 20,
+                        },
+                        boundaryGap: true,
+                        data: ['Area_dx', 'Compactness', 'Width_dx', 'Compactness Width_dx', 'Area_dx Width_dx', 'Compactness Area_dx', 'Compactness Area_dx Width_dx', 'Compactness Area_dx Width_dx Parallelism Perimeter_dx', 'Compactness Area_dx Width_dx Parallelism Perimeter_dx Complexity Circularity C/W_dx Elongation'],
+                        axisTick: {
+                            alignWithLabel: true,
+                            show: true
+                        },
+                        axisLabel: {
+                            interval: 0,
+                            fontSize: 18,
+                            lineHeight: 20,
+                            formatter: function(str) {
+                                var arr = str.split(' ')
+                                var result = ''
+                                arr.forEach(item => {
+                                    result = result + item + '\n'
+                                })
+                                return result
+                            }
+                        }
+                    },
+                    {
+                        type: 'category'
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: 'Precision',
+                        nameLocation: 'center',
+                        nameGap: 56,
+                        nameTextStyle: {
+                            fontSize: 20,
+                        },
+                        min: 0.6,
+                        max: 1,
+                        axisLabel: {
+                            fontSize: 18
+                        }
+                    },
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        name: 'Wuhan',
+                        type: 'line',
+                        symbolSize: 8,
+                        lineStyle: {
+                            width: 3
+                        },
+                        data: [0.781, 0.884, 0.927, 0.931, 0.947, 0.938, 0.941, 0.928, 0.902]
+                    },
+                    {
+                        name: 'Beijing',
+                        type: 'line',
+                        symbolSize: 8,
+                        lineStyle: {
+                            width: 3
+                        },
+                        data: [0.897, 0.718, 0.909, 0.898, 0.91, 0.9, 0.901, 0.902, 0.899]
+                    },
+                    {
+                        name: 'Munich',
+                        type: 'line',
+                        symbolSize: 8,
+                        lineStyle: {
+                            width: 3
+                        },
+                        data: [0.691, 0.774, 0.866, 0.865, 0.874, 0.879, 0.878, 0.836, 0.814]
+                    }
+                ]
+            };
+            ;
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+       </script>
+   </body>
+</html>
