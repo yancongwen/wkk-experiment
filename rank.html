@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/echarts.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@1/dist/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@1/dist/ecStat.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/extension/dataTool.min.js"></script>
+       <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/map/js/china.js"></script> -->
+       <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/map/js/world.js"></script> -->
+       <!-- <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script> -->
+       <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/extension/bmap.min.js"></script> -->
+       <script type="text/javascript">
+            var dom = document.getElementById("container");
+            var myChart = echarts.init(dom);
+            var app = {};
+            var colors = ['#f36c6c', '#e6cf4e', '#20d180', '#0093ff']
+            option = null;
+            option = {
+                title: {
+                    text: ''
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {
+                            pixelRatio: 3
+                        }
+                    }
+                },
+                grid: {
+                    top: '6%',
+                    left: '6%',
+                    right: '6%',
+                    bottom: '10%',
+                    borderWidth: 1,
+                    borderColor: '#000',
+                    backgroundColor: '#006',
+                    containLabel: true
+                },
+                yAxis: [
+                    {
+                        type: 'category',
+                        name: '',
+                        nameLocation: 'center',
+                        nameGap: 140,
+                        nameTextStyle: {
+                            fontSize: 20,
+                        },
+                        boundaryGap: true,
+                        data: ["Parallelor", "Cmi", "C/W_dx", "Circularity", "Perimeter_dx", "Elongation", "Complexity", "Area_dx", "Width_dx"],
+                        axisTick: {
+                            alignWithLabel: true,
+                            show: true
+                        },
+                        axisLabel: {
+                            interval: 0,
+                            fontSize: 18,
+                            lineHeight: 20
+                        }
+                    },
+                    {
+                        type: 'category',
+                        position: 'right'
+                    }
+                ],
+                xAxis: [
+                    {
+                        type: 'value',
+                        name: 'Random Forest Feature Important',
+                        nameLocation: 'center',
+                        nameGap: 56,
+                        nameTextStyle: {
+                            fontSize: 20,
+                        },
+                        min: 0,
+                        max: 0.3,
+                        splitLine: {
+                            show: false
+                        },
+                        axisLabel: {
+                            fontSize: 18
+                        }
+                    },
+                    {
+                        type: 'category',
+                        position: 'right'
+                    }
+                ],
+                series: [
+                    {
+                        type: 'bar',
+                        barWidth: 40,
+                        data: [0.032684, 0.039964, 0.040743, 0.059589, 0.064831, 0.076464, 0.206526, 0.210571, 0.26863].map((value, index) => {
+                            return {
+                                value,
+                                itemStyle: {
+                                    color: colors[8 - index] ? colors[8 - index] : colors[3]
+                                }
+                            }
+                        })
+                    }
+                ],
+                color: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']
+            };
+            ;
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+       </script>
+   </body>
+</html>
