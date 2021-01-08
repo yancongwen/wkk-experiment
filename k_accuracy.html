@@ -9,11 +9,14 @@
        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@1/dist/echarts-gl.min.js"></script>
        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@1/dist/ecStat.min.js"></script>
        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/extension/dataTool.min.js"></script>
+       <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/map/js/china.js"></script> -->
+       <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/map/js/world.js"></script> -->
+       <!-- <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script> -->
+       <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/extension/bmap.min.js"></script> -->
        <script type="text/javascript">
             var dom = document.getElementById("container");
             var myChart = echarts.init(dom);
             var app = {};
-            var colors = ['#c23531','#2f4554', '#61a0a8']
             option = null;
             option = {
                 title: {
@@ -23,15 +26,15 @@
                     trigger: 'axis'
                 },
                 legend: {
-                    top: '7.6%',
-                    left: '15%',
+                    top: '68%',
+                    right: '8%',
                     align: 'left',
                     width: '1%',
+                    data: ['Wuhan', 'Beijing', 'Munich'],
                     itemWidth: 40,
                     itemHeight: 10,
-                    data: ['Wuhan RF-DPC', 'Beijing RF-DPC', 'Munich RF-DPC', 'Wuhan SVM-DPC', 'Beijing SVM-DPC', 'Munich SVM-DPC',],
                     textStyle: {
-                        fontSize: 18
+                        fontSize: 20
                     }
                 },
                 toolbox: {
@@ -46,23 +49,25 @@
                     show: true,
                     borderWidth: 1,
                     borderColor: '#000',
-                    top: '6%',
-                    left: '8%',
-                    right: '8%',
-                    bottom: '5%',
+                    top: '10%',
+                    left: '6%',
+                    right: '6%',
+                    bottom: '10%',
                     containLabel: true
                 },
                 xAxis: [
                     {
                         type: 'category',
-                        name: 'Shape Descriptors',
+                        name: 'K',
                         nameLocation: 'center',
-                        nameGap: 168,
+                        nameGap: 48,
+                        minInterval: 0,
                         nameTextStyle: {
                             fontSize: 20,
                         },
+                        // boundaryGap: 10,
                         boundaryGap: true,
-                        data: ['Compactness Area_dx', 'Area_dx Width_dx', 'Compactness Area_dx Width_dx', 'Compactness Area_dx Width_dx Parallelism Perimeter_dx', 'Compactness Area_dx Width_dx Parallelism Perimeter_dx Complexity Circularity C/W_dx Elongation'],
+                        data: [2, 3, 4, 5, 6],
                         axisTick: {
                             alignWithLabel: true,
                             show: true
@@ -80,6 +85,9 @@
                                 return result
                             }
                         }
+                    },
+                    {
+                        type: 'category'
                     }
                 ],
                 yAxis: [
@@ -88,77 +96,50 @@
                         name: 'Accuracy',
                         nameLocation: 'center',
                         nameGap: 56,
+                        boundaryGap: ['10%', 100],
                         nameTextStyle: {
                             fontSize: 20,
                         },
+                        min: 0.7,
+                        max: 1,
                         axisLabel: {
                             fontSize: 18
                         }
+                    },
+                    {
+                        type: 'value'
                     }
                 ],
                 series: [
                     {
-                        name: 'Wuhan RF-DPC',
+                        name: 'Wuhan',
                         type: 'line',
                         symbolSize: 8,
+                        smooth: false,
                         lineStyle: {
-                            color: colors[0],
                             width: 3
                         },
-                        data: [0.018, -0.001, 0.016, 0.041, 0.057]
+                        data: [0.909, 0.938, 0.938, 0.938, 0.938]
                     },
                     {
-                        name: 'Beijing RF-DPC',
+                        name: 'Beijing',
                         type: 'line',
                         symbolSize: 8,
+                        smooth: false,
                         lineStyle: {
-                            color: colors[1],
                             width: 3
                         },
-                        data: [-0.01, -0.011, 0.004, 0.007, 0.016]
+                        data: [0.788, 0.9, 0.9, 0.9, 0.9]
                     },
                     {
-                        name: 'Munich RF-DPC',
+                        name: 'Munich',
                         type: 'line',
                         symbolSize: 8,
+                        smooth: false,
                         lineStyle: {
-                            color: colors[2],
                             width: 3
                         },
-                        data: [-0.01, -0.002, -0.015, 0.043, 0.047]
-                    },
-                    {
-                        name: 'Wuhan SVM-DPC',
-                        type: 'line',
-                        symbolSize: 8,
-                        lineStyle: {
-                            color: colors[0],
-                            type: 'dotted',
-                            width: 3
-                        },
-                        data: [-0.013, -0.002, 0.004, 0.021, 0.038]
-                    },
-                    {
-                        name: 'Beijing SVM-DPC',
-                        type: 'line',
-                        symbolSize: 8,
-                        lineStyle: {
-                            color: colors[1],
-                            type: 'dotted',
-                            width: 3
-                        },
-                        data: [0.016, -0.006, 0.02, 0.004, 0.026]
-                    },
-                    {
-                        name: 'Munich SVM-DPC',
-                        type: 'line',
-                        symbolSize: 8,
-                        lineStyle: {
-                            color: colors[2],
-                            type: 'dotted',
-                            width: 3
-                        },
-                        data: [-0.016, -0.002, 0.01, 0.047, 0.088]
+                        data: [0.828, 0.828, 0.828, 0.879, 0.879]
                     }
                 ]
             };

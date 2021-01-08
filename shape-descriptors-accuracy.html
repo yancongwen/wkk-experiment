@@ -30,6 +30,8 @@
                     right: '8%',
                     align: 'right',
                     width: '1%',
+                    itemWidth: 40,
+                    itemHeight: 10,
                     data: ['Wuhan', 'Beijing', 'Munich'],
                     textStyle: {
                         fontSize: 20
@@ -43,6 +45,10 @@
                     }
                 },
                 grid: {
+                    z: 999,
+                    show: true,
+                    borderWidth: 1,
+                    borderColor: '#000',
                     top: '5%',
                     left: '4%',
                     right: '3%',
@@ -77,9 +83,6 @@
                                 return result
                             }
                         }
-                    },
-                    {
-                        type: 'category'
                     }
                 ],
                 yAxis: [
@@ -96,9 +99,6 @@
                         axisLabel: {
                             fontSize: 18
                         }
-                    },
-                    {
-                        type: 'value'
                     }
                 ],
                 series: [
