@@ -3,8 +3,72 @@
    <head>
        <meta charset="utf-8">
    </head>
-   <body style="height: 100%; margin: 0">
+   <body class="main" style="height: 100%; margin: 0">
        <div id="container" style="height: 100%"></div>
+       <div class="legend">
+           <div class="item">
+               <span class="line color1">
+                    <span class="circle color1"></span>
+               </span>
+               <span>Wuhan SVM-DPC</span>
+           </div>
+           <div class="item color2">
+            <span class="line">
+                 <span class="circle color2"></span>
+            </span>
+               <span>Beijing SVM-DPC</span>
+           </div>
+           <div class="item">
+            <span class="line color3">
+                 <span class="circle color3"></span>
+            </span>
+               <span>Munich SVM-DPC</span>
+           </div>
+       </div>
+       <style>
+            .main {
+                position: relative;
+            }
+            .legend {
+                position: absolute;
+                top: 18.2%;
+                left: 20.5%;
+                font-size: 18px;
+                font-family: sans-serif;
+                color: #333;
+            }
+            .item {
+                display: flex;
+                align-items: center;
+            }
+            .line {
+                position: relative;
+                width: 40px;
+                height: 0;
+                border-bottom: 1px dashed #ccc;
+                margin-right: 4px;
+            }
+            .circle {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 7px;
+                height: 7px;
+                border:  1px solid #000;
+                border-radius: 50%;
+                background-color: #fff;
+            }
+            .color1 {
+                border-color: #c23531;
+            }
+            .color2 {
+                border-color: #2f4554;
+            }
+            .color3 {
+                border-color: #61a0a8;
+            }
+       </style>
        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/echarts.min.js"></script>
        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@1/dist/echarts-gl.min.js"></script>
        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@1/dist/ecStat.min.js"></script>
@@ -23,13 +87,14 @@
                     trigger: 'axis'
                 },
                 legend: {
-                    top: '7.6%',
-                    left: '15%',
+                    top: '7.2%',
+                    left: '20%',
                     align: 'left',
                     width: '1%',
                     itemWidth: 40,
                     itemHeight: 10,
-                    data: ['Wuhan RF-DPC', 'Beijing RF-DPC', 'Munich RF-DPC', 'Wuhan SVM-DPC', 'Beijing SVM-DPC', 'Munich SVM-DPC',],
+                    // data: ['Wuhan RF-DPC', 'Beijing RF-DPC', 'Munich RF-DPC', 'Wuhan SVM-DPC', 'Beijing SVM-DPC', 'Munich SVM-DPC',],
+                    data: ['Wuhan RF-DPC', 'Beijing RF-DPC', 'Munich RF-DPC',],
                     textStyle: {
                         fontSize: 18
                     }
