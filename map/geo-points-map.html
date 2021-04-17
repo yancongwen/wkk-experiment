@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>地址解析</title>
+    <script src="./geo.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+        .mapboxgl-canvas:focus {
+            outline: none;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        .them-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #efefef;
+            padding: 10px;
+            font-family: 'Open Sans', sans-serif;
+        }
+        #menu {
+            position: absolute;
+            background: #efefef;
+            padding: 10px;
+            font-family: 'Open Sans', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id='map'></div>
+    <div class="them-wrapper">
+        <select id="themSelect">
+            <option value ="streets-v11">streets</option>
+            <option value ="outdoors-v11">outdoors</option>
+            <option value="light-v10">light</option>
+            <option value="dark-v10">dark</option>
+            <option value="satellite-v9">satellite</option>
+            <option value="satellite-streets-v11">satellite-streets</option>
+        </select>
+    </div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoieWFuY29uZ3dlbiIsImEiOiJjaml4eWgxMnowNHY0M3BvMW96cDI1bWJ6In0.QA-bmCCquo-mziBfZ8KOIQ';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            center: [108.3, 29], // starting position [lng, lat]
+            zoom: 3, // starting zoom
+            style: 'mapbox://styles/mapbox/streets-v11'
+        })
+        var themSelect = document.getElementById('themSelect')
+        themSelect.onchange = function(e) {
+            map.setStyle('mapbox://styles/mapbox/' + e.target.value)
+        }
+        // 加载数据
+        fetch('./data.json')
+            .then(function(response) {
+                return response.json()
+            })
+            .then(function(data) {
+                console.log(data)
+                data.list.forEach(function(address) {
+                    geocoding(address)
+                        .then(function(location) {
+                            addMarker(location, address)
+                        })
+                })
+            })
+
+        function geocoding(address) {
+            // 百度API跨域，代理转发一下
+            var proxy = 'https://bird.ioliu.cn/v1?url='
+            var url = 'http://api.map.baidu.com/geocoding/v3/?ret_coordtype=gcj02ll&output=json&ak=onhKngynIyhmOVpNqTFU6Thl4R6YNj7Z&address='
+            return fetch(proxy + url + address)
+                .then(function(response) {
+                    return response.json()
+                })
+                .then(function(response) {
+                    if (response.status === 0 && response.result) {
+                        return gcj2wgs(response.result.location)
+                    } else {
+                        throw Error('解析失败')
+                    }
+                }).catch(function(e) {})
+        }
+
+        function addMarker(location, address) {
+            var popup = new mapboxgl.Popup({
+                    offset: 25,
+                    closeButton: false,
+                })
+                .setText(address);
+            new mapboxgl.Marker()
+                .setLngLat(location)
+                .setPopup(popup)
+                .addTo(map);
+        }
+    </script>
+</body>
+</html>
