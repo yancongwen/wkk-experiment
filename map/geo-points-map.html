@@ -86,6 +86,7 @@
             container: 'map',
             center: [106, 35],
             zoom: 3,
+            minZoom: 2,
             style: 'mapbox://styles/mapbox/dark-v10'
         })
         var themSelect = document.getElementById('themSelect')
@@ -265,11 +266,12 @@
             }
             var lineDistance = turf.lineDistance(feature, 'kilometers')
             var arc = []
-            var steps = Math.max(lineDistance / 10, 20)
+            var steps = Math.max(Math.ceil(lineDistance / 10), 20)
             for (var i = 0; i < lineDistance; i += lineDistance / steps) {
                 var segment = turf.along(feature, i, 'kilometers')
                 arc.push(segment.geometry.coordinates);
             }
+            arc.push(routeCoordinates[index + 1])
             feature.geometry.coordinates = arc
             route.features.push(feature)
             map.getSource('route').setData(route)
