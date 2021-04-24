@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>地址解析</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+        .mapboxgl-canvas:focus {
+            outline: none;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        .setup-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            flex-flow: column;
+            background: rgba(255, 255, 255, 0.3);
+            /* padding: 6px; */
+            font-family: 'Open Sans', sans-serif;
+        }
+        .select {
+            margin: 4px;
+        }
+        .overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .overlay button {
+            font: 600 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            background-color: #3386c0;
+            color: #fff;
+            display: inline-block;
+            margin: 0;
+            padding: 4px 8px;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .overlay button:hover {
+            background-color: #4ea0da;
+        }
+    </style>
+</head>
+<body>
+    <div id='map'></div>
+    <div class="overlay">
+        <button id="replay">Replay</button>
+    </div>
+    <div class="setup-wrapper">
+        <select class="select" id="themSelect">
+            <option value="light-v10">light</option>
+            <option value="dark-v10">dark</option>
+            <option value ="streets-v11">streets</option>
+            <option value ="outdoors-v11">outdoors</option>
+            <option value="satellite-v9">satellite</option>
+            <option value="satellite-streets-v11">satellite-streets</option>
+            <option value="navigation-preview-day-v4">nav-preview-day</option>
+            <option value="navigation-preview-night-v4">nav-preview-night</option>
+            <option value="navigation-guidance-day-v4">nav-guidance-day</option>
+            <option value="navigation-guidance-night-v4">nav-guidance-night</option>
+        </select>
+        <select class="select" id="personSelect"></select>
+    </div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoieWFuY29uZ3dlbiIsImEiOiJjaml4eWgxMnowNHY0M3BvMW96cDI1bWJ6In0.QA-bmCCquo-mziBfZ8KOIQ';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            center: [112, 34],
+            zoom: 5,
+            minZoom: 2,
+            style: 'mapbox://styles/mapbox/light-v10'
+        })
+        var themSelect = document.getElementById('themSelect')
+        themSelect.onchange = function(e) {
+            map.setStyle('mapbox://styles/mapbox/' + e.target.value)
+            map.once('styledataloading', function() {
+                // setStyle 之后之前的图层和数据会被清除，需要重新添加
+                setTimeout(function() {
+                    addLayers()
+                    reset()
+                }, 1000)
+            })
+        }
+    </script>
+
+    <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"></script>
+    <script>
+        var list = []
+        var markers = []
+        var routeCoordinates = []
+
+        // 航线
+        var route = {
+            type: 'FeatureCollection',
+            features: []
+        }
+        // 飞机点
+        var point = {
+            type: 'FeatureCollection',
+            features: [
+                {
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'Point',
+                        coordinates: []
+                    }
+                }
+            ]
+        }
+
+        map.on('load', function() {
+            addLayers()
+            initRoute()
+
+            var btn = document.getElementById('replay')
+            btn.onclick = function() {
+                reset()
+            }
+            var personSelect = document.getElementById('personSelect')
+            personSelect.onchange = function(e) {
+                selectPerson(e.target.value)
+            }
+        })
+
+        function addLayers() {
+            // 航线
+            map.addSource('route', {
+                type: 'geojson',
+                data: route
+            })
+            // 飞机
+            map.addSource('point', {
+                type: 'geojson',
+                data: point
+            })
+            // 设置 3 条重叠但样式不一样的 Line 来创造发光的航线
+            map.addLayer({
+                id: 'route',
+                source: 'route',
+                type: 'line',
+                paint: {
+                    'line-width': 6,
+                    'line-blur': 3,
+                    'line-opacity': 0.4,
+                    'line-color': '#007cbf'
+                }
+            })
+            map.addLayer({
+                id: 'route2',
+                source: 'route',
+                type: 'line',
+                paint: {
+                    'line-width': 3,
+                    'line-blur': 3,
+                    'line-opacity': 0.4,
+                    'line-color': '#009df2'
+                }
+            })
+            map.addLayer({
+                id: 'route3',
+                source: 'route',
+                type: 'line',
+                paint: {
+                    'line-width': 0.2,
+                    'line-blur': 1,
+                    'line-opacity': 1,
+                    'line-color': '#fafdff'
+                }
+            })
+            // 飞机
+            map.addLayer({
+                id: 'point',
+                source: 'point',
+                type: 'symbol',
+                layout: {
+                    'icon-size': 1.5,
+                    'icon-image': 'horse-riding-15',
+                    // 'icon-rotate': ['get', 'bearing'],
+                    'icon-rotation-alignment': 'map',
+                    'icon-allow-overlap': true,
+                    'icon-ignore-placement': true
+                }
+            })
+        }
+
+        // 初始化
+        function initRoute() {
+            fetch('./三国.json')
+                .then(function(response) {
+                    return response.json()
+                })
+                .then(function(data) {
+                    list = data
+                    insertOptions()
+                    selectPerson(0)
+                })
+        }
+
+        // 插入选择框
+        function insertOptions() {
+            var fragment = document.createDocumentFragment()
+            list.forEach((item, index) => {
+                var option = document.createElement('option')
+                option.innerText = item.name
+                option.setAttribute('value', index)
+                fragment.appendChild(option)
+            })
+            document.getElementById('personSelect').appendChild(fragment)
+        }
+
+        // 添加 marker
+        function addMarker(point) {
+            const lnglat = new mapboxgl.LngLat(point.lnglat[0], point.lnglat[1])
+            var popup = new mapboxgl.Popup({
+                    offset: 25,
+                    closeButton: false,
+                })
+                .setText(point.historyPlace)
+            var marker = new mapboxgl.Marker({
+                scale: 0.6
+            })
+                .setLngLat(lnglat)
+                .setPopup(popup)
+                .addTo(map);
+            markers.push(marker)
+        }
+
+        // 航线
+        function startFly(index) {
+            if (index >= routeCoordinates.length - 1) {
+                return
+            }
+            point.features[0].geometry.coordinates = routeCoordinates[index]
+            var feature = {
+                type: 'Feature',
+                geometry: {
+                    type: 'LineString',
+                    coordinates: [routeCoordinates[index], routeCoordinates[index + 1]]
+                }
+            }
+            var lineDistance = turf.lineDistance(feature, 'kilometers')
+            var arc = []
+            var steps = Math.max(Math.ceil(lineDistance / 2), 60)
+            for (var i = 0; i < lineDistance; i += lineDistance / steps) {
+                var segment = turf.along(feature, i, 'kilometers')
+                arc.push(segment.geometry.coordinates);
+            }
+            arc.push(routeCoordinates[index + 1])
+            feature.geometry.coordinates = arc
+            route.features.push(feature)
+            map.getSource('route').setData(route)
+            animate(index, 0)
+        }
+
+        // 动画
+        function animate(routeIndex, pointIndex) {
+            var pointSource = map.getSource('point')
+            if (!(pointSource && route.features && route.features.length && route.features[routeIndex])) {
+                return
+            }
+            var lineFeature = route.features[routeIndex]
+            var steps = lineFeature.geometry.coordinates.length - 1
+            point.features[0].geometry.coordinates = lineFeature.geometry.coordinates[pointIndex]
+            // 根据航线计算角度
+            const pointA = lineFeature.geometry.coordinates[pointIndex >= steps ? pointIndex - 1 : pointIndex]
+            const pointB = lineFeature.geometry.coordinates[pointIndex >= steps ? pointIndex : pointIndex + 1]
+            // point.features[0].properties.bearing = pointA[0] > pointB[0] ? 0 : 90
+            // point.features[0].properties.bearing = turf.bearing(
+            //     turf.point(
+            //         lineFeature.geometry.coordinates[
+            //             pointIndex >= steps ? pointIndex - 1 : pointIndex
+            //         ]
+            //     ),
+            //     turf.point(
+            //         lineFeature.geometry.coordinates[
+            //             pointIndex >= steps ? pointIndex : pointIndex + 1
+            //         ]
+            //     )
+            // )
+            map.getSource('point').setData(point)
+            if (pointIndex < steps) {
+                requestAnimationFrame(function() {
+                    animate(routeIndex, pointIndex + 1)
+                })
+            } else {
+                startFly(routeIndex + 1)
+            }
+        }
+
+        function clearRoute() {
+            route.features = []
+            map.getSource('route').setData(route)
+            point.features[0].geometry.coordinates = []
+            map.getSource('point').setData(point)
+        }
+
+        function clearMarker() {
+            markers.forEach(marker => {
+                marker.remove()
+            })
+            markers = []
+        }
+
+        function reset() {
+            clearRoute()
+            startFly(0)
+        }
+
+        function selectPerson(index) {
+            clearMarker()
+            clearRoute()
+            routeCoordinates = []
+            var points = list[index].list
+            points.sort((a, b) => {
+                return a.index > b.index
+            })
+            points.forEach(item => {
+                addMarker(item)
+                routeCoordinates.push(item.lnglat)
+            })
+            startFly(0)
+        }
+    </script>
+</body>
+</html>
