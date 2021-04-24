@@ -5,3 +5,4 @@
 - [accuracy-difference](https://yancongwen.cn/wkk-experiment/accuracy-difference.html)
 - [shape-descriptors-accuracy](https://yancongwen.cn/wkk-experiment/shape-descriptors-accuracy.html)
 - [geocoding](https://yancongwen.cn/wkk-experiment/map/geo-points-map.html)
+- [三国人物地图](https://yancongwen.cn/wkk-experiment/map/index.html)
