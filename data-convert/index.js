@@ -102,7 +102,7 @@ function multiRequest(requests, maxNum) {
             if (current < n) {
                 // console.log(`开始 ${current + 1}`)
                 requests[current]().then(res => {
-                    console.log(`完成 ${current + 1} | n`)
+                    // console.log(`完成 ${current + 1}`)
                     result[current] = res
                     success++
                     next()
