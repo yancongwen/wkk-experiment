@@ -100,7 +100,7 @@
         }
     </script>
 
-    <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6.3.0/turf.min.js"></script>
     <script>
         var list = []
         var markers = []
@@ -329,6 +329,7 @@
             clearRoute()
             routeCoordinates = []
             var points = list[index].list
+            if (!points.length) return
             points.sort((a, b) => {
                 return a.index > b.index
             })
@@ -336,7 +337,22 @@
                 addMarker(item)
                 routeCoordinates.push(item.lnglat)
             })
-            startFly(0)
+            // 切换视图
+            if (points.length > 1) {
+                var line = turf.lineString(routeCoordinates)
+                var bbox = turf.bbox(line)
+                map.fitBounds(
+                    [[bbox[0], bbox[1]], [bbox[2], bbox[3]]],
+                    {
+                        padding: 200
+                    }
+                )
+            } else {
+                map.flyTo({center: points[0].lnglat, zoom: 7})
+            }
+            setTimeout(() => {
+                startFly(0)
+            }, 1000)
         }
     </script>
 </body>
