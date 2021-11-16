@@ -15,7 +15,7 @@
         var dom = document.getElementById("container");
         var myChart = echarts.init(dom);
 
-        fetch('./data.json').then(res => {
+                                                fetch('./data/data.json').then(res => {
             return res.json()
         }).then(data => {
             initChart(data)
@@ -44,6 +44,9 @@
                 tooltip: {
                     trigger: 'item',
                     formatter: '{b0}',
+                    textStyle: {
+                        fontSize: 24
+                    },
                     axisPointer: {
                         type: 'cross'
                     }
@@ -62,7 +65,7 @@
                     {
                         name: '标签',
                         type: 'scatter',
-                        symbolSize: 5,
+                        symbolSize: 20,
                         data: data
                     }
                 ]

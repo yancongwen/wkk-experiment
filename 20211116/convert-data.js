@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
  
 const converter = csv()
-converter.fromFile('./data/testdata2.csv')
+converter.fromFile('./data/testdata3.csv')
     .then(list => {
         let result = list.map(item => {
             return {
@@ -16,7 +16,7 @@ converter.fromFile('./data/testdata2.csv')
 
 // 写文件
 function exportFile(data) {
-    let file = path.join(__dirname, 'data2.json');
+    let file = path.join(__dirname, './data/data3.json');
     fs.writeFile(file, JSON.stringify(data), function (err) {
         if (err) {
             console.log(err)
