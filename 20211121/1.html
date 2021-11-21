@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/echarts.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@1/dist/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@1/dist/ecStat.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/extension/dataTool.min.js"></script>
+       <script type="text/javascript">
+            var dom = document.getElementById("container");
+            var myChart = echarts.init(dom);
+            var app = {};
+            option = null;
+            option = {
+                title: {
+                    text: ''
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                // legend: {
+                //     top: '57%',
+                //     right: '7.5%',
+                //     align: 'left',
+                //     width: '1%',
+                //     itemWidth: 40,
+                //     itemHeight: 10,
+                //     data: ['Wuhan', 'Beijing', 'Munich'],
+                //     textStyle: {
+                //         fontSize: 20
+                //     }
+                // },
+                // toolbox: {
+                //     feature: {
+                //         saveAsImage: {
+                //             pixelRatio: 3
+                //         }
+                //     }
+                // },
+                grid: {
+                    z: 999,
+                    show: true,
+                    borderWidth: 1,
+                    borderColor: '#000',
+                    top: '5%',
+                    left: '4%',
+                    right: '3%',
+                    bottom: '1%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        name: 'Shape Descriptors',
+                        nameLocation: 'center',
+                        nameGap: 168,
+                        nameTextStyle: {
+                            fontSize: 20,
+                        },
+                        boundaryGap: true,
+                        data: [
+                            'Area_dx',
+                            'Complexity',
+                            'Compactness',
+                            'Width_dx',
+                            'Complexity,Width_dx',
+                            'Area_dx,Width_dx',
+                            'Complexity,Area_dx',
+                            'Compactness,Width_dx',
+                            'Compactness,Area_dx',
+                            'Compactness,Area_dx,Width_dx',
+                            'Complexity,Area_dx,Width_dx',
+                            'Complexity,Area_dx,Width_dx,Compactness',
+                            'Compactness,Area_dx,Width_dx,Parallelism,Perimeter_dx',
+                            'Compactness,Area_dx,Width_dx,Parallelism,Perimeter_dx,Complexity,Circularity,C/W_dx,Elongation'
+                        ],
+                        axisTick: {
+                            alignWithLabel: true,
+                            show: true
+                        },
+                        axisLabel: {
+                            interval: 0,
+                            fontSize: 18,
+                            lineHeight: 20,
+                            formatter: function(str) {
+                                var arr = str.split(' ')
+                                var result = ''
+                                arr.forEach(item => {
+                                    result = result + item + '\n'
+                                })
+                                return result
+                            }
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: 'Accuracy',
+                        nameLocation: 'center',
+                        nameGap: 56,
+                        nameTextStyle: {
+                            fontSize: 20,
+                        },
+                        min: 0.6,
+                        max: 1,
+                        axisLabel: {
+                            fontSize: 18
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: 'Wuhan',
+                        type: 'bar',
+                        symbolSize: 8,
+                        lineStyle: {
+                            width: 3
+                        },
+                        data: [0.868504,0.913386,0.869291,0.943307,0.93622,0.96378,0.923622,0.940157,0.952756,0.955906,0.933858,0.954331,0.937795,0.889764]
+                    },
+                    {
+                        name: 'Beijing',
+                        type: 'bar',
+                        symbolSize: 8,
+                        lineStyle: {
+                            width: 3
+                        },
+                        data: [0.932642,0.737885,0.737885,0.941481,0.932338,0.942091,0.941176,0.929899,0.932033,0.933252,0.9427,0.931119,0.934471,0.933252]
+                    },
+                    {
+                        name: 'Munich',
+                        type: 'bar',
+                        symbolSize: 8,
+                        lineStyle: {
+                            width: 3
+                        },
+                        data: [0.629402,0.65735,0.775293,0.861934,0.85858,0.86976,0.736165,0.820011,0.827837,0.874231,0.868083,0.825042,0.83678,0.815539]
+                    }
+                ]
+            };
+            ;
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+       </script>
+   </body>
+</html>

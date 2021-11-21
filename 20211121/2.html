@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/echarts.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@1/dist/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@1/dist/ecStat.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/extension/dataTool.min.js"></script>
+       <script type="text/javascript">
+            var dom = document.getElementById("container");
+            var myChart = echarts.init(dom);
+            var app = {};
+            option = null;
+            option = {
+                title: {
+                    text: ''
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    top: '73%',
+                    right: '10.5%',
+                    align: 'left',
+                    width: '0.5%',
+                    itemWidth: 16,
+                    itemHeight: 16,
+                    data: ['Wuhan', 'Beijing', 'Munich'],
+                    textStyle: {
+                        fontSize: 20
+                    }
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {
+                            pixelRatio: 3
+                        }
+                    }
+                },
+                grid: {
+                    z: 999,
+                    show: true,
+                    borderWidth: 1,
+                    borderColor: '#000',
+                    top: '10%',
+                    left: '10%',
+                    right: '10%',
+                    bottom: '10%',
+                    containLabel: true
+                },
+                yAxis: [
+                    {
+                        type: 'category',
+                        name: 'Shape Descriptors',
+                        nameLocation: 'center',
+                        nameGap: 168,
+                        nameTextStyle: {
+                            fontSize: 20,
+                        },
+                        boundaryGap: true,
+                        data: [
+                            'Width_dx',
+                            'Area_dx',
+                            'Complexity',
+                            'Perimeter_dx',
+                            'Compactness',
+                            'C/W_dx',
+                            'Circularity',
+                            'Elongation',
+                            'Parallelism'
+                        ].reverse(),
+                        axisTick: {
+                            alignWithLabel: true,
+                            show: true
+                        },
+                        axisLabel: {
+                            interval: 0,
+                            fontSize: 18,
+                            lineHeight: 20,
+                            formatter: function(str) {
+                                var arr = str.split(' ')
+                                var result = ''
+                                arr.forEach(item => {
+                                    result = result + item + '\n'
+                                })
+                                return result
+                            }
+                        }
+                    }
+                ],
+                xAxis: [
+                    {
+                        type: 'value',
+                        name: 'Accuracy',
+                        nameLocation: 'center',
+                        splitNumber: 10,
+                        nameGap: 40,
+                        nameTextStyle: {
+                            fontSize: 20,
+                        },
+                        minInterval: 0.1,
+                        // min: 0.6,
+                        // max: 1,
+                        axisLabel: {
+                            fontSize: 18
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: 'Wuhan',
+                        type: 'bar',
+                        stack: 'Ad',
+                        barWidth: 45,
+                        // symbolSize: 8,
+                        lineStyle: {
+                            width: 3
+                        },
+                        data: [0.3019332,0.2096976,0.2147522,0.0852944,0.043371,0.0349172,0.0499826,0.0392814,0.0207704].reverse()
+                    },
+                    {
+                        name: 'Beijing',
+                        type: 'bar',
+                        stack: 'Ad',
+                        barWidth: 45,
+                        // symbolSize: 8,
+                        lineStyle: {
+                            width: 3
+                        },
+                        data: [0.3800222,0.2514736,0.098183,0.0975242,0.0904452,0.0357322,0.0209924,0.0157976,0.0098304].reverse()
+                    },
+                    {
+                        name: 'Munich',
+                        type: 'bar',
+                        stack: 'Ad',
+                        barWidth: 45,
+                        // symbolSize: 8,
+                        lineStyle: {
+                            width: 3
+                        },
+                        data: [0.2544254,0.2080308,0.1028238,0.1116404,0.0969808,0.0607602,0.0570696,0.0631632,0.045106].reverse()
+                    }
+                ]
+            };
+            ;
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+       </script>
+   </body>
+</html>
